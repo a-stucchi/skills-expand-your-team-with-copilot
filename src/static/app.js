@@ -568,6 +568,9 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `
         }
+        <button class="share-button" data-activity="${name}" aria-label="Share activity">
+          🔗 Share
+        </button>
       </div>
     `;
 
@@ -587,7 +590,97 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
+    // Add click handler for share button
+    const shareButton = activityCard.querySelector(".share-button");
+    shareButton.addEventListener("click", () => {
+      shareActivity(name, details);
+    });
+
     activitiesList.appendChild(activityCard);
+  }
+
+  // Share an activity using the Web Share API or a fallback popup
+  function shareActivity(name, details) {
+    const schedule = formatSchedule(details);
+    const shareText = `Check out "${name}" at Mergington High School! ${details.description} Schedule: ${schedule}`;
+    const shareUrl = window.location.href;
+
+    // Use native Web Share API when available (works great on phones)
+    if (navigator.share) {
+      navigator.share({
+        title: name,
+        text: shareText,
+        url: shareUrl,
+      }).catch(() => {});
+      return;
+    }
+
+    // Fallback: show a small share popup with platform links
+    showSharePopup(name, shareText, shareUrl);
+  }
+
+  // Show a share popup with X (Twitter), WhatsApp, and copy-link options
+  function showSharePopup(name, shareText, shareUrl) {
+    // Remove any existing popup
+    const existing = document.getElementById("share-popup");
+    if (existing) existing.remove();
+
+    const encodedText = encodeURIComponent(shareText);
+    const encodedUrl = encodeURIComponent(shareUrl);
+
+    const popup = document.createElement("div");
+    popup.id = "share-popup";
+    popup.className = "share-popup";
+    popup.innerHTML = `
+      <div class="share-popup-content">
+        <button class="share-popup-close" aria-label="Close">✕</button>
+        <h4>Share "${name}"</h4>
+        <div class="share-options">
+          <a class="share-option share-twitter" href="https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}" target="_blank" rel="noopener">
+            𝕏 X (Twitter)
+          </a>
+          <a class="share-option share-whatsapp" href="https://wa.me/?text=${encodedText}%20${encodedUrl}" target="_blank" rel="noopener">
+            💬 WhatsApp
+          </a>
+          <button class="share-option share-copy" id="copy-link-btn">
+            🔗 Copy Link
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(popup);
+
+    // Animate in
+    requestAnimationFrame(() => popup.classList.add("show"));
+
+    // Copy link handler
+    popup.querySelector("#copy-link-btn").addEventListener("click", () => {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        const btn = popup.querySelector("#copy-link-btn");
+        btn.textContent = "✅ Copied!";
+        setTimeout(() => {
+          btn.textContent = "🔗 Copy Link";
+        }, 2000);
+      }).catch(() => {
+        const btn = popup.querySelector("#copy-link-btn");
+        btn.textContent = "❌ Copy failed";
+        setTimeout(() => {
+          btn.textContent = "🔗 Copy Link";
+        }, 2000);
+      });
+    });
+
+    // Close handlers
+    const closePopup = () => {
+      popup.classList.remove("show");
+      setTimeout(() => popup.remove(), 250);
+    };
+
+    popup.querySelector(".share-popup-close").addEventListener("click", closePopup);
+    popup.addEventListener("click", (e) => {
+      if (e.target === popup) closePopup();
+    });
   }
 
   // Event listeners for search and filter
