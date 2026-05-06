@@ -187,7 +187,9 @@ section h3 {
   margin-top: auto;
   padding-top: 10px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
 
 /* Activity Tag */
@@ -663,4 +665,121 @@ footer {
 
 #logout-button:hover {
   background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Share button on activity cards */
+.share-button {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+}
+
+.share-button:hover {
+  background-color: var(--background);
+  border-color: var(--primary-light);
+  color: var(--primary-light);
+}
+
+/* Share popup overlay */
+.share-popup {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.share-popup.show {
+  opacity: 1;
+}
+
+.share-popup-content {
+  background-color: var(--surface);
+  border-radius: 8px;
+  padding: 20px 24px;
+  max-width: 320px;
+  width: 90%;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+  position: relative;
+  transform: translateY(-16px);
+  transition: transform 0.25s ease;
+}
+
+.share-popup.show .share-popup-content {
+  transform: translateY(0);
+}
+
+.share-popup-content h4 {
+  color: var(--primary);
+  margin-bottom: 14px;
+  font-size: 1rem;
+  padding-right: 20px;
+}
+
+.share-popup-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 2px 6px;
+  line-height: 1;
+}
+
+.share-popup-close:hover {
+  color: var(--text-primary);
+}
+
+.share-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.share-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 14px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+  border: none;
+  text-align: center;
+  width: 100%;
+}
+
+.share-option:hover {
+  opacity: 0.85;
+}
+
+.share-twitter {
+  background-color: #000;
+  color: #fff;
+}
+
+.share-whatsapp {
+  background-color: #25d366;
+  color: #fff;
+}
+
+.share-copy {
+  background-color: var(--primary);
+  color: #fff;
 }
