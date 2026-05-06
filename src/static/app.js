@@ -31,17 +31,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function applyTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme);
-    themeIcon.textContent = theme === "dark" ? "☀️" : "🌙";
+    if (themeIcon) {
+      themeIcon.textContent = theme === "dark" ? "☀️" : "🌙";
+    }
     localStorage.setItem("theme", theme);
   }
 
-  // Apply saved theme on load
-  applyTheme(localStorage.getItem("theme") || "light");
+  if (darkModeToggle) {
+    // Apply saved theme on load
+    applyTheme(localStorage.getItem("theme") || "light");
 
-  darkModeToggle.addEventListener("click", () => {
-    const current = document.documentElement.getAttribute("data-theme");
-    applyTheme(current === "dark" ? "light" : "dark");
-  });
+    darkModeToggle.addEventListener("click", () => {
+      const current = document.documentElement.getAttribute("data-theme");
+      applyTheme(current === "dark" ? "light" : "dark");
+    });
+  }
 
   // Activity categories with corresponding colors
   const activityTypes = {
